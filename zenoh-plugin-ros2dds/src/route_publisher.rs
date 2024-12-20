@@ -357,9 +357,9 @@ impl RoutePublisher {
             .remove(&format!("{zenoh_id}:{zenoh_key_expr}"));
         tracing::debug!("{self} now serving remote routes {:?}", self.remote_routes);
         // if last remote route removed, deactivate the DDS Reader
-        if self.remote_routes.is_empty() {
-            self.deactivate_dds_reader();
-        }
+        //if self.remote_routes.is_empty() {
+        //    self.deactivate_dds_reader();
+        //}
     }
 
     #[inline]
