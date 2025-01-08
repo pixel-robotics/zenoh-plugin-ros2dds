@@ -69,7 +69,7 @@ pub struct RouteServiceCli {
     #[serde(serialize_with = "crate::config::serialize_duration_as_f32")]
     queries_timeout: Duration,
     #[serde(skip)]
-    _matching_listener: zenoh::matching::MatchingListener<()>,
+    _matching_listener: Option<zenoh::matching::MatchingListener<()>>,
     // the local DDS Reader receiving client's requests and routing them to Zenoh
     #[serde(serialize_with = "serialize_atomic_entity_guid")]
     req_reader: Arc<AtomicDDSEntity>,
@@ -133,9 +133,9 @@ impl RouteServiceCli {
         let rep_writer: Arc<AtomicDDSEntity> = Arc::new(DDS_ENTITY_NULL.into());
         let req_reader: Arc<AtomicDDSEntity> = Arc::new(DDS_ENTITY_NULL.into());
 
-        let matching_listener = zenoh_querier
-            .matching_listener()
-            .callback({
+        //let matching_listener = zenoh_querier
+        //    .matching_listener()
+        //    .callback({
                 let rep_writer = rep_writer.clone();
                 let req_reader = req_reader.clone();
                 let ros2_name = ros2_name.clone();
@@ -143,9 +143,9 @@ impl RouteServiceCli {
                 let context = context.clone();
                 let zquerier = zenoh_querier.clone();
 
-                move |status| {
-                        tracing::debug!("{route_id} MatchingStatus changed: {status:?}");
-                        if status.matching() {
+         //       move |status| {
+         //               tracing::debug!("{route_id} MatchingStatus changed: {status:?}");
+         //               if status.matching() {
                             if let Err(e) = activate(
                                 &rep_writer,
                                 &req_reader,
@@ -158,18 +158,18 @@ impl RouteServiceCli {
                             ) {
                                 tracing::error!("{route_id}: failed to activate DDS Reader: {e}");
                             }
-                        } else {
-                            deactivate(
-                                &rep_writer,
-                                &req_reader,
-                                &route_id,
-                                &context.ros_discovery_mgr,
-                            )
-                        }
-                }
-            })
-            .await
-            .map_err(|e| format!("Route Service Client (ROS:{ros2_name} <-> Zenoh:{zenoh_key_expr}): failed to listen of matching status changes: {e}",))?;
+             //           } else {
+             //               deactivate(
+             //                   &rep_writer,
+             //                   &req_reader,
+             //                   &route_id,
+             //                   &context.ros_discovery_mgr,
+             //               )
+             //           }
+               // }
+           // })
+           // .await
+           // .map_err(|e| format!("Route Service Client (ROS:{ros2_name} <-> Zenoh:{zenoh_key_expr}): failed to listen of matching status changes: {e}",))?;
 
         Ok(RouteServiceCli {
             ros2_name,
@@ -178,7 +178,7 @@ impl RouteServiceCli {
             context,
             _zenoh_querier: zenoh_querier,
             queries_timeout,
-            _matching_listener: matching_listener,
+            _matching_listener: None,
             rep_writer,
             req_reader,
             liveliness_token: None,
@@ -244,9 +244,9 @@ impl RouteServiceCli {
             .remove(&format!("{zenoh_id}:{zenoh_key_expr}"));
         tracing::debug!("{self}: now serving remote routes {:?}", self.remote_routes);
         // if last remote node removed, deactivate the route
-        if self.remote_routes.is_empty() {
-            self.deactivate();
-        }
+        //if self.remote_routes.is_empty() {
+        //    self.deactivate();
+       // }
     }
 
     #[inline]
