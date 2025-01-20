@@ -29,7 +29,7 @@ async-trait = "0.1.66"
 bincode = "1.3.3"
 cdr = "0.2.4"
 clap = "4.4.11"
-cyclors = "=0.2.3"
+cyclors = "=0.2.5"
 derivative = "2.2.0"
 flume = "0.11.0"
 futures = "0.3.26"
@@ -56,11 +56,6 @@ zenoh-plugin-rest = { version = "1.1.0", default-features = false, features = [
   "static_plugin",
 ] }
 zenoh-plugin-trait = { version = "1.1.0", default-features = false }
-
-# r2r is for tests only. See in in zenoh-plugins-ros2dds/Cargo.toml
-# TODO: The ros_test should be re-enabled as soon the r2r dependency is removed from the build of zenoh-plugin-ros2dds
-# r2r = "0.9"
-
 
 [profile.release]
 codegen-units = 1
